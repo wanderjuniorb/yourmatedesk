@@ -1,21 +1,8 @@
 name: Full Flutter CI
 
 on:
+  # YourMateDesk: desativado (só execução manual). Use "Build YourMateDesk (Windows)".
   workflow_dispatch:
-  pull_request:
-    paths-ignore:
-    - "docs/**"
-    - "README.md"
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - ".github/**"
-      - "docs/**"
-      - "README.md"
-      - "res/**"
-      - "appimage/**"
-      - "flatpak/**"
 
 jobs:
   run-ci:

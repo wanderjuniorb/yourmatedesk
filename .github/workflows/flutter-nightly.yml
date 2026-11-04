@@ -1,9 +1,7 @@
 name: Flutter Nightly Build
 
 on:
-  schedule:
-    # schedule build every night
-    - cron: "0 0 * * *"
+  # YourMateDesk: desativado (só execução manual). Use "Build YourMateDesk (Windows)".
   workflow_dispatch:
 
 jobs:
