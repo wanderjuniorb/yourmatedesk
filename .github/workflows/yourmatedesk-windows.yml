@@ -166,7 +166,7 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/YourMateDesk.exe
           popd
           mkdir -p ./output
           mv ./target/release/rustdesk-portable-packer.exe ./output/YourMateDesk-${{ env.VERSION }}-x64.exe
