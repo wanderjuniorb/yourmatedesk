@@ -28,6 +28,12 @@ echo Instalando o YourMateDesk (modo Tecnico)...
 start "" /wait "%INSTALADOR%" --silent-install
 timeout /t 20 /nobreak >nul
 
+if not exist "%APP%" if exist "%PASTA%\rustdesk.exe" (
+  REM Versao com o executavel ainda chamado rustdesk.exe: cria a copia com o nome certo.
+  copy /Y "%PASTA%\rustdesk.exe" "%APP%" >nul
+  sc start YourMateDesk >nul 2>&1
+)
+
 if not exist "%APP%" (
   echo Nao encontrei "%APP%". Verifique se a instalacao terminou e rode de novo.
   exit /b 1

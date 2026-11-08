@@ -11,7 +11,8 @@ if "%~1"=="" (
   exit /b 1
 )
 set "SENHA=%~1"
-set "APP=%ProgramFiles%\YourMateDesk\YourMateDesk.exe"
+set "PASTA=%ProgramFiles%\YourMateDesk"
+set "APP=%PASTA%\YourMateDesk.exe"
 
 for %%F in ("%~dp0YourMateDesk-*-x64.exe") do set "INSTALADOR=%%~fF"
 if not defined INSTALADOR (
@@ -22,6 +23,12 @@ if not defined INSTALADOR (
 echo Instalando o YourMateDesk...
 start "" /wait "%INSTALADOR%" --silent-install
 timeout /t 20 /nobreak >nul
+
+if not exist "%APP%" if exist "%PASTA%\rustdesk.exe" (
+  REM Versao com o executavel ainda chamado rustdesk.exe: cria a copia com o nome certo.
+  copy /Y "%PASTA%\rustdesk.exe" "%APP%" >nul
+  sc start YourMateDesk >nul 2>&1
+)
 
 if not exist "%APP%" (
   echo Nao encontrei "%APP%". Verifique se a instalacao terminou e rode de novo.
