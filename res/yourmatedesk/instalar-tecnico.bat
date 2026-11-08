@@ -2,41 +2,62 @@
 REM ============================================================
 REM  YourMateDesk - instalacao no computador do TECNICO
 REM  (conecta nos clientes e tambem pode receber conexoes)
-REM  Uso (como Administrador):
-REM     instalar-tecnico.bat [SENHA]
-REM  A senha e opcional: so e necessaria se voce quiser acessar
-REM  este computador de outro lugar.
-REM  Coloque este arquivo na mesma pasta do YourMateDesk-*-x64.exe
+REM  Basta dar dois cliques. Coloque este arquivo na mesma pasta
+REM  do YourMateDesk-*-x64.exe
+REM  Opcional pela linha de comando: instalar-tecnico.bat SENHA
 REM ============================================================
 setlocal
-set "PASTA=%ProgramFiles%\YourMateDesk"
-set "APP=%PASTA%\YourMateDesk.exe"
 
+REM --- Pede permissao de administrador automaticamente ---
 net session >nul 2>&1
 if errorlevel 1 (
-  echo Abra o Prompt de Comando como Administrador e rode de novo.
-  exit /b 1
+  echo Pedindo permissao de administrador...
+  if "%~1"=="" (
+    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -WorkingDirectory '%~dp0' -Verb RunAs"
+  ) else (
+    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -ArgumentList '%~1' -WorkingDirectory '%~dp0' -Verb RunAs"
+  )
+  exit /b
 )
 
+cd /d "%~dp0"
+set "PASTA=%ProgramFiles%\YourMateDesk"
+set "APP=%PASTA%\YourMateDesk.exe"
+set "SENHA=%~1"
+
+echo ============================================
+echo   YourMateDesk - instalacao (modo TECNICO)
+echo ============================================
+echo.
+
+set "INSTALADOR="
 for %%F in ("%~dp0YourMateDesk-*-x64.exe") do set "INSTALADOR=%%~fF"
 if not defined INSTALADOR (
-  echo Instalador YourMateDesk-*-x64.exe nao encontrado nesta pasta.
-  exit /b 1
+  echo [ERRO] Nao encontrei o YourMateDesk-1.5.1-x64.exe nesta pasta:
+  echo        %~dp0
+  echo Coloque o instalador junto com este arquivo e tente de novo.
+  goto fim
 )
 
-echo Instalando o YourMateDesk (modo Tecnico)...
+if not defined SENHA (
+  echo Senha para acessar ESTE computador de outro lugar.
+  echo Deixe em branco e aperte Enter se nao precisar.
+  set /p "SENHA=Senha: "
+)
+
+echo.
+echo Instalando, aguarde cerca de 30 segundos...
 start "" /wait "%INSTALADOR%" --silent-install
 timeout /t 20 /nobreak >nul
 
 if not exist "%APP%" if exist "%PASTA%\rustdesk.exe" (
-  REM Versao com o executavel ainda chamado rustdesk.exe: cria a copia com o nome certo.
   copy /Y "%PASTA%\rustdesk.exe" "%APP%" >nul
-  sc start YourMateDesk >nul 2>&1
 )
 
 if not exist "%APP%" (
-  echo Nao encontrei "%APP%". Verifique se a instalacao terminou e rode de novo.
-  exit /b 1
+  echo [ERRO] A instalacao nao terminou: nao encontrei "%APP%".
+  echo Espere um pouco e rode este arquivo de novo.
+  goto fim
 )
 
 echo Ativando o modo Tecnico...
@@ -44,16 +65,22 @@ echo Ativando o modo Tecnico...
 sc stop YourMateDesk >nul 2>&1
 timeout /t 3 /nobreak >nul
 taskkill /f /im YourMateDesk.exe >nul 2>&1
+taskkill /f /im rustdesk.exe >nul 2>&1
 sc start YourMateDesk >nul 2>&1
+timeout /t 3 /nobreak >nul
 
-if not "%~1"=="" (
-  echo Definindo a senha de acesso deste computador...
-  "%APP%" --password "%~1"
+if defined SENHA (
+  echo Definindo a senha...
+  "%APP%" --password "%SENHA%"
 )
 
 echo.
 echo ===== ID deste computador =====
 "%APP%" --get-id
+echo.
 echo ===============================
-echo Pronto. Abra o YourMateDesk pelo atalho da Area de Trabalho.
+echo Pronto! Abra o YourMateDesk pelo atalho da Area de Trabalho.
+
+:fim
+echo.
 pause
