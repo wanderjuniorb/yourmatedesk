@@ -14,7 +14,6 @@ Acesso remoto próprio para suporte aos clientes, baseado no [RustDesk](https://
 | Cor de destaque da interface (#7079F2) | `flutter/lib/common.dart` |
 | Dados do arquivo .exe (nome, descrição) | `flutter/windows/runner/Runner.rc` |
 | Compilação automática só para Windows x64 | `.github/workflows/yourmatedesk-windows.yml` |
-
 | Escolha **Técnico** ou **Cliente** na instalação (gravada em `ymd-mode.txt`) | `flutter/lib/desktop/pages/install_page.dart`, `src/yourmatedesk.rs` |
 | "Minhas conexões" como primeira aba, sem login | `flutter/lib/models/peer_tab_model.dart`, `src/yourmatedesk.rs` |
 | Botão de câmera na conexão, salvando em `Imagens\YourMateDesk\<conexão>` | `flutter/lib/desktop/widgets/remote_toolbar.dart`, `flutter/lib/yourmatedesk/screenshot.dart` |
