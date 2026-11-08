@@ -25,7 +25,7 @@ class PeerTabModel with ChangeNotifier {
   static const int maxTabCount = 5;
   static const List<String> tabNames = [
     'Recent sessions',
-    'Favorites',
+    'Minhas conexões', // YourMateDesk
     'Discovered',
     'Address book',
     'Accessible devices',
@@ -52,8 +52,8 @@ class PeerTabModel with ChangeNotifier {
         }
         return list;
       }();
-  final List<int> orders =
-      List.generate(maxTabCount, (index) => index, growable: false);
+  // YourMateDesk: "Minhas conexões" (favoritos) primeiro.
+  final List<int> orders = List.from([1, 0, 2, 3, 4], growable: false);
   List<int> get visibleEnabledOrderedIndexs =>
       orders.where((e) => isVisibleEnabled[e]).toList();
   List<Peer> _selectedPeers = List.empty(growable: true);
@@ -110,7 +110,8 @@ class PeerTabModel with ChangeNotifier {
     }
     // init currentTab
     _currentTab =
-        int.tryParse(bind.getLocalFlutterOption(k: kOptionPeerTabIndex)) ?? 0;
+        int.tryParse(bind.getLocalFlutterOption(k: kOptionPeerTabIndex)) ??
+            PeerTabIndex.fav.index;
     if (_currentTab < 0 || _currentTab >= maxTabCount) {
       _currentTab = 0;
     }

@@ -28,6 +28,7 @@ import 'package:flutter_hbb/models/desktop_render_texture.dart';
 import 'package:flutter_hbb/models/terminal_model.dart';
 import 'package:flutter_hbb/common/shared_state.dart';
 import 'package:flutter_hbb/utils/multi_window_manager.dart';
+import 'package:flutter_hbb/yourmatedesk/screenshot.dart';
 import 'package:flutter_hbb/utils/http_service.dart' as http;
 import 'package:tuple/tuple.dart';
 import 'package:image/image.dart' as img2;
@@ -491,6 +492,9 @@ class FfiModel with ChangeNotifier {
     final dialogManager = parent.target!.dialogManager;
     if (msg.isNotEmpty) {
       msgBox(sessionId, msgBoxType, msgBoxTitle, msg, '', dialogManager);
+    } else if (isDesktop) {
+      // YourMateDesk: salva direto em Imagens\YourMateDesk\<conexão>.
+      ymdAutoSaveScreenshot(sessionId, peerId, dialogManager);
     } else {
       final msgBoxText = 'screenshot-action-tip';
 

@@ -69,6 +69,8 @@ class _InstallPageBodyState extends State<_InstallPageBody>
   final RxBool startmenu = true.obs;
   final RxBool desktopicon = true.obs;
   final RxBool printer = false.obs;
+  // YourMateDesk: Técnico (conecta e recebe) ou Cliente (só recebe).
+  final RxBool ymdTech = false.obs;
   final RxBool showProgress = false.obs;
   final RxBool btnEnabled = true.obs;
   final RxBool cancelEnabled = true.obs;
@@ -207,6 +209,7 @@ class _InstallPageBodyState extends State<_InstallPageBody>
                   ),
                 ],
               ).marginSymmetric(vertical: 2 * em),
+              _ymdModeChooser().marginOnly(bottom: 14),
               Option(startmenu, label: 'Create start menu shortcuts')
                   .marginOnly(bottom: 7),
               Option(desktopicon, label: 'Create desktop icon')
@@ -308,6 +311,7 @@ class _InstallPageBodyState extends State<_InstallPageBody>
       if (startmenu.value) args += ' startmenu';
       if (desktopicon.value) args += ' desktopicon';
       if (printer.value) args += ' printer';
+      args += ymdTech.value ? ' ymd-tech' : ' ymd-client';
       bind.installInstallMe(options: args, path: installPath);
     }
 
@@ -320,6 +324,69 @@ class _InstallPageBodyState extends State<_InstallPageBody>
     } finally {
       if (mounted && !showProgress.value) btnEnabled.value = true;
     }
+  }
+
+  // YourMateDesk: escolha do tipo de instalação.
+  Widget _ymdModeChooser() {
+    Widget choice(bool tech, String title, String subtitle) =>
+        Expanded(child: Obx(() {
+          final selected = ymdTech.value == tech;
+          return InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => ymdTech.value = tech,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                      color: selected ? MyTheme.accent : Colors.grey,
+                      width: selected ? 2 : 1),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      selected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: selected ? MyTheme.accent : Colors.grey,
+                      size: 20,
+                    ).marginOnly(right: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(title,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          Text(subtitle,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          );
+        }));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Tipo de instalação',
+                style: TextStyle(fontWeight: FontWeight.bold))
+            .marginOnly(bottom: 8),
+        Row(
+          children: [
+            choice(false, 'Cliente',
+                'Só recebe conexões. Para os computadores atendidos.'),
+            const SizedBox(width: 12),
+            choice(true, 'Técnico',
+                'Conecta e recebe conexões. Para o seu computador.'),
+          ],
+        ),
+      ],
+    );
   }
 
   void selectInstallPath() async {

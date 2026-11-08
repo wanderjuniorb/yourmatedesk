@@ -15,6 +15,17 @@ Acesso remoto próprio para suporte aos clientes, baseado no [RustDesk](https://
 | Dados do arquivo .exe (nome, descrição) | `flutter/windows/runner/Runner.rc` |
 | Compilação automática só para Windows x64 | `.github/workflows/yourmatedesk-windows.yml` |
 
+| Escolha **Técnico** ou **Cliente** na instalação (gravada em `ymd-mode.txt`) | `flutter/lib/desktop/pages/install_page.dart`, `src/yourmatedesk.rs` |
+| "Minhas conexões" como primeira aba, sem login | `flutter/lib/models/peer_tab_model.dart`, `src/yourmatedesk.rs` |
+| Botão de câmera na conexão, salvando em `Imagens\YourMateDesk\<conexão>` | `flutter/lib/desktop/widgets/remote_toolbar.dart`, `flutter/lib/yourmatedesk/screenshot.dart` |
+
+### Modos
+
+- **Técnico** (seu computador): conecta e recebe conexões; mostra a tela de Segurança para definir a senha.
+- **Cliente**: só recebe conexões; configurações escondidas. É o padrão do `instalar-cliente.bat` e da instalação silenciosa.
+
+Para trocar o modo de um computador, reinstale escolhendo o outro tipo.
+
 Os workflows originais do RustDesk foram deixados só para execução manual, para não gastar minutos do GitHub a cada envio.
 
 ## 1. Servidor (VPS Ubuntu)

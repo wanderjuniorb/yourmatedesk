@@ -850,6 +850,10 @@ class _RemoteToolbarState extends State<RemoteToolbar> {
     if (!isWeb) {
       toolbarItems.add(_VoiceCallMenu(id: widget.id, ffi: widget.ffi));
     }
+    // YourMateDesk: botão de captura de tela com salvamento automático.
+    if (!isWeb && widget.ffi.connType == ConnType.defaultConn) {
+      toolbarItems.add(_ScreenshotMenu(ffi: widget.ffi));
+    }
     if (!isWeb) toolbarItems.add(_RecordMenu());
     toolbarItems.add(_CloseMenu(id: widget.id, ffi: widget.ffi));
     final toolbarBorderRadius = BorderRadius.all(Radius.circular(4.0));
@@ -2967,6 +2971,56 @@ class _VoiceCallMenu extends StatelessWidget {
       onPressed: () => bind.sessionCloseVoiceCall(sessionId: ffi.sessionId),
       color: _ToolbarTheme.redColor,
       hoverColor: _ToolbarTheme.hoverRedColor,
+    );
+  }
+}
+
+// YourMateDesk: tira a captura da tela remota com um clique; o arquivo é salvo
+// automaticamente em Imagens\YourMateDesk\<conexão> (models/model.dart).
+class _ScreenshotMenu extends StatelessWidget {
+  final FFI ffi;
+  const _ScreenshotMenu({Key? key, required this.ffi}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Provider.of<FfiModel>(context);
+    final supported = bind.sessionGetCommonSync(
+            sessionId: ffi.sessionId,
+            key: 'is_screenshot_supported',
+            param: '') ==
+        'true';
+    if (!supported) return Offstage();
+    return _IconMenuButton(
+      icon: Center(
+        child: Icon(
+          Icons.photo_camera_outlined,
+          color: Colors.white,
+          size: _ToolbarTheme.buttonSize * 0.62,
+        ),
+      ),
+      tooltip: 'Take screenshot',
+      onPressed: () {
+              // Uma captura por vez (o próprio programa libera ao salvar).
+              if (ffi.ffiModel.timerScreenshot != null) return;
+              final pi = ffi.ffiModel.pi;
+              if (pi.currentDisplay == kAllDisplayValue) {
+                msgBox(
+                    ffi.sessionId,
+                    'custom-nook-nocancel-hasclose-info',
+                    'Take screenshot',
+                    'screenshot-merged-screen-not-supported-tip',
+                    '',
+                    ffi.dialogManager);
+                return;
+              }
+              bind.sessionTakeScreenshot(
+                  sessionId: ffi.sessionId, display: pi.currentDisplay);
+              ffi.ffiModel.timerScreenshot = Timer(Duration(seconds: 30), () {
+                ffi.ffiModel.timerScreenshot = null;
+              });
+            },
+      color: _ToolbarTheme.blueColor,
+      hoverColor: _ToolbarTheme.hoverBlueColor,
     );
   }
 }
