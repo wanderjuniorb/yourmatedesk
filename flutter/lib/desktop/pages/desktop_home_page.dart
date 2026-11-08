@@ -294,6 +294,9 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     final textColor = Theme.of(context).textTheme.titleLarge?.color;
     final showOneTime = model.approveMode != 'click' &&
         model.verificationMethod != kUsePermanentPassword;
+    // YourMateDesk: acesso só por senha fixa -> mostra "Senha de acesso"
+    // com um botão para definir/alterar direto na tela principal.
+    if (!showOneTime) return const _YmdPasswordBoard();
     return Container(
       margin: EdgeInsets.only(left: 20.0, right: 16, top: 13, bottom: 13),
       child: Row(
@@ -885,6 +888,116 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     if (state == AppLifecycleState.resumed) {
       shouldBeBlocked(_block, canBeBlocked);
     }
+  }
+}
+
+// YourMateDesk: quadro "Senha de acesso" da tela principal.
+class _YmdPasswordBoard extends StatefulWidget {
+  const _YmdPasswordBoard({Key? key}) : super(key: key);
+
+  @override
+  State<_YmdPasswordBoard> createState() => _YmdPasswordBoardState();
+}
+
+class _YmdPasswordBoardState extends State<_YmdPasswordBoard> {
+  bool _isSet = false;
+  bool _loaded = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+    // Atualiza o estado depois de definir a senha (a janela não avisa ao fechar).
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) => _refresh());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    final v = await bind.mainGetCommon(key: 'permanent-password-set');
+    if (!mounted) return;
+    final isSet = v == 'true';
+    if (!_loaded || isSet != _isSet) {
+      setState(() {
+        _isSet = isSet;
+        _loaded = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.titleLarge?.color;
+    return Container(
+      margin: const EdgeInsets.only(left: 20.0, right: 16, top: 13, bottom: 13),
+      child: Row(
+        children: [
+          Container(
+            width: 2,
+            height: 52,
+            decoration: BoxDecoration(color: MyTheme.accent),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 7),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Senha de acesso',
+                    style: TextStyle(
+                        fontSize: 14, color: textColor?.withOpacity(0.5)),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(
+                        _isSet
+                            ? Icons.check_circle_rounded
+                            : Icons.error_outline_rounded,
+                        size: 18,
+                        color: !_loaded
+                            ? Colors.grey
+                            : (_isSet ? Colors.green : Colors.orange),
+                      ).marginOnly(right: 6),
+                      Expanded(
+                        child: Text(
+                          !_loaded
+                              ? '...'
+                              : (_isSet
+                                  ? 'Definida'
+                                  : 'Não definida: ninguém consegue acessar'),
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyTheme.accent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                    ),
+                    icon: const Icon(Icons.lock_outline_rounded, size: 18),
+                    label: Text(_isSet ? 'Alterar senha' : 'Definir senha'),
+                    onPressed: () => setPasswordDialog(
+                        notEmptyCallback: () => Future.delayed(
+                            const Duration(milliseconds: 500), _refresh)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -4,7 +4,8 @@ REM  YourMateDesk - instalacao no computador do CLIENTE
 REM  (so recebe conexoes)
 REM  Basta dar dois cliques. Coloque este arquivo na mesma pasta
 REM  do YourMateDesk-*-x64.exe
-REM  Opcional pela linha de comando: instalar-cliente.bat SENHA
+REM  A senha de acesso e definida depois, no proprio programa
+REM  (botao "Definir senha" na tela principal).
 REM ============================================================
 setlocal
 
@@ -12,18 +13,13 @@ REM --- Pede permissao de administrador automaticamente ---
 net session >nul 2>&1
 if errorlevel 1 (
   echo Pedindo permissao de administrador...
-  if "%~1"=="" (
-    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -WorkingDirectory '%~dp0' -Verb RunAs"
-  ) else (
-    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -ArgumentList '%~1' -WorkingDirectory '%~dp0' -Verb RunAs"
-  )
+  powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -WorkingDirectory '%~dp0' -Verb RunAs"
   exit /b
 )
 
 cd /d "%~dp0"
 set "PASTA=%ProgramFiles%\YourMateDesk"
 set "APP=%PASTA%\YourMateDesk.exe"
-set "SENHA=%~1"
 
 echo ============================================
 echo   YourMateDesk - instalacao (modo CLIENTE)
@@ -39,13 +35,6 @@ if not defined INSTALADOR (
   goto fim
 )
 
-:pede_senha
-if not defined SENHA (
-  echo Defina a senha de acesso deste computador.
-  echo Use uma senha forte e diferente para cada cliente.
-  set /p "SENHA=Senha: "
-  goto pede_senha
-)
 
 echo.
 echo Instalando, aguarde cerca de 30 segundos...
@@ -64,15 +53,13 @@ if not exist "%APP%" (
   goto fim
 )
 
-echo Definindo a senha...
-"%APP%" --password "%SENHA%"
-
 echo.
 echo ===== ID deste computador =====
 "%APP%" --get-id
 echo.
 echo ===============================
-echo Anote o ID acima junto com o nome do cliente e a senha.
+echo Agora abra o YourMateDesk, clique em "Definir senha" e escolha
+echo a senha deste cliente. Anote o ID, o nome do cliente e a senha.
 
 :fim
 echo.

@@ -63,15 +63,14 @@ Em **Settings → Secrets and variables → Actions → New repository secret**:
 **Actions → Build YourMateDesk (Windows) → Run workflow.** Leva por volta de 40 a 60 minutos.
 O arquivo `YourMateDesk-<versão>-x64.exe` fica nos artefatos da execução e na Release `yourmatedesk-latest`.
 
-## 4. Instalar no cliente
+## 4. Instalar
 
-Copie para o computador do cliente o instalador e `res/yourmatedesk/instalar-cliente.bat`, e rode **como Administrador**:
+Coloque o instalador junto com o script e dê dois cliques (ele pede permissão de administrador sozinho):
 
-```
-instalar-cliente.bat SenhaForteDoCliente
-```
+- no seu computador: `res/yourmatedesk/instalar-tecnico.bat`
+- nos clientes: `res/yourmatedesk/instalar-cliente.bat`
 
-O script instala, define a senha fixa e mostra o ID. Use uma senha diferente e forte para cada cliente.
+Depois abra o YourMateDesk e clique em **Definir senha** na tela principal (mínimo 8 caracteres, com maiúscula, minúscula e número). Sem senha definida, ninguém consegue acessar o computador.
 
 ## 5. Acessar
 
