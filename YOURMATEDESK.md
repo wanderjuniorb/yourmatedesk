@@ -25,6 +25,8 @@ Acesso remoto próprio para suporte aos clientes, baseado no [RustDesk](https://
 
 Para trocar o modo de um computador, reinstale escolhendo o outro tipo.
 
+No seu computador, você também pode instalar sem telas com `res/yourmatedesk/instalar-tecnico.bat [SENHA]` (como Administrador).
+
 Os workflows originais do RustDesk foram deixados só para execução manual, para não gastar minutos do GitHub a cada envio.
 
 ## 1. Servidor (VPS Ubuntu)
