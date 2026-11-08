@@ -19,6 +19,27 @@ pub const MODE_FILE: &str = "ymd-mode.txt";
 pub const INSTALL_OPTION_TECH: &str = "ymd-tech";
 pub const INSTALL_OPTION_CLIENT: &str = "ymd-client";
 
+/// Versão do YourMateDesk mostrada no programa: `<base>.<número da compilação>`.
+/// O número vem de `YMD_BUILD` (no GitHub Actions, o número da execução).
+pub const VERSION_BASE: &str = "1.0";
+const BUILD: Option<&str> = option_env!("YMD_BUILD");
+
+pub fn version() -> String {
+    format!(
+        "{}.{}",
+        VERSION_BASE,
+        BUILD
+            .map(str::trim)
+            .filter(|b| !b.is_empty())
+            .unwrap_or("0")
+    )
+}
+
+/// Texto exibido na tela principal, ex.: "Versão 1.0.12 · compilado em 2026-11-08 23:10".
+pub fn version_text() -> String {
+    format!("Versão {} · compilado em {}", version(), crate::BUILD_DATE)
+}
+
 const SERVER: Option<&str> = option_env!("YMD_SERVER");
 const KEY: Option<&str> = option_env!("YMD_KEY");
 

@@ -3,7 +3,7 @@ REM ============================================================
 REM  YourMateDesk - instalacao no computador do TECNICO
 REM  (conecta nos clientes e tambem pode receber conexoes)
 REM  Basta dar dois cliques. Coloque este arquivo na mesma pasta
-REM  do YourMateDesk-*-x64.exe
+REM  do instalador YourMateDesk-x64.exe
 REM  A senha de acesso e definida depois, no proprio programa
 REM  (botao "Definir senha" na tela principal).
 REM ============================================================
@@ -27,9 +27,9 @@ echo ============================================
 echo.
 
 set "INSTALADOR="
-for %%F in ("%~dp0YourMateDesk-*-x64.exe") do set "INSTALADOR=%%~fF"
+for %%F in ("%~dp0YourMateDesk*.exe") do set "INSTALADOR=%%~fF"
 if not defined INSTALADOR (
-  echo [ERRO] Nao encontrei o YourMateDesk-1.5.1-x64.exe nesta pasta:
+  echo [ERRO] Nao encontrei o instalador YourMateDesk-x64.exe nesta pasta:
   echo        %~dp0
   echo Coloque o instalador junto com este arquivo e tente de novo.
   goto fim

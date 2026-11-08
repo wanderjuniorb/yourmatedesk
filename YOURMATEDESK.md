@@ -61,7 +61,10 @@ Em **Settings → Secrets and variables → Actions → New repository secret**:
 ## 3. Gerar o instalador
 
 **Actions → Build YourMateDesk (Windows) → Run workflow.** Leva por volta de 40 a 60 minutos.
-O arquivo `YourMateDesk-<versão>-x64.exe` fica nos artefatos da execução e na Release `yourmatedesk-latest`.
+Cada execução cria uma Release `YourMateDesk 1.0.<número>` com `YourMateDesk-x64.exe`. Link fixo da última versão:
+https://github.com/wanderjuniorb/yourmatedesk/releases/latest/download/YourMateDesk-x64.exe
+
+A versão em execução aparece na tela principal, abaixo da logo (ex.: *Versão 1.0.12*).
 
 ## 4. Instalar
 

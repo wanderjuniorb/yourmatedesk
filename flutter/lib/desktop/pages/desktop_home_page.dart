@@ -89,6 +89,20 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         alignment: Alignment.center,
         child: loadLogo(),
       ),
+      // YourMateDesk: versão em execução.
+      Align(
+        alignment: Alignment.center,
+        child: SelectableText(
+          bind.mainGetCommonSync(key: 'ymd-version'),
+          style: TextStyle(
+              fontSize: 11,
+              color: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.color
+                  ?.withOpacity(0.5)),
+        ).marginOnly(top: 2, bottom: 4),
+      ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),
